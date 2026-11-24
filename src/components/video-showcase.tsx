@@ -55,6 +55,7 @@ function formatTime(seconds: number) {
 export function VideoShowcase() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
+  const autoplayPendingRef = useRef(true);
   const [duration, setDuration] = useState(60);
   const [currentTime, setCurrentTime] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -65,11 +66,49 @@ export function VideoShowcase() {
     const video = videoRef.current;
     if (!video) return;
 
+    const attemptAutoplay = () => {
+      if (!autoplayPendingRef.current || !video.paused) return;
+
+      video.muted = true;
+      const attempt = video.play();
+      if (attempt) {
+        // Autoplay can be rejected by browser policy or interrupted while
+        // the large original file buffers. Retry on readiness and interaction.
+        attempt.catch(() => undefined);
+      }
+    };
+
+    const onReady = () => attemptAutoplay();
+    const onVisibilityChange = () => {
+      if (document.visibilityState === "visible") attemptAutoplay();
+    };
+    const onInteraction = () => attemptAutoplay();
+    const onPlaying = () => {
+      autoplayPendingRef.current = false;
+    };
+
     video.muted = true;
-    const attempt = video.play();
-    if (attempt) {
-      attempt.catch(() => setIsPlaying(false));
-    }
+    attemptAutoplay();
+
+    video.addEventListener("loadedmetadata", onReady);
+    video.addEventListener("loadeddata", onReady);
+    video.addEventListener("canplay", onReady);
+    video.addEventListener("playing", onPlaying);
+    document.addEventListener("visibilitychange", onVisibilityChange);
+    window.addEventListener("pointerdown", onInteraction, { passive: true });
+    window.addEventListener("touchstart", onInteraction, { passive: true });
+    window.addEventListener("keydown", onInteraction);
+
+    return () => {
+      video.removeEventListener("loadedmetadata", onReady);
+      video.removeEventListener("loadeddata", onReady);
+      video.removeEventListener("canplay", onReady);
+      video.removeEventListener("playing", onPlaying);
+      document.removeEventListener("visibilitychange", onVisibilityChange);
+      window.removeEventListener("pointerdown", onInteraction);
+      window.removeEventListener("touchstart", onInteraction);
+      window.removeEventListener("keydown", onInteraction);
+    };
   }, []);
 
   useEffect(() => {
@@ -253,7 +292,7 @@ export function VideoShowcase() {
             ref={videoRef}
             className="h-full w-full object-cover"
             poster="images/poster.jpg"
-            preload="metadata"
+            preload="auto"
             autoPlay
             loop
             muted
