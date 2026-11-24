@@ -78,6 +78,30 @@ Vercel 配置已写入 `vercel.json`：
 - Output Directory：`dist`
 - 媒体与图片启用长缓存，页面启用基础安全响应头
 
+## 部署到 GitHub Pages
+
+仓库已包含 `.github/workflows/deploy-pages.yml`。Vite 使用相对基础路径，因此同一个构建产物既能部署在 Vercel 根路径，也能部署在 GitHub Pages 的项目子路径下。
+
+1. 在 GitHub 创建一个仓库，并通过 HTTPS 推送 `main` 分支：
+   ```bash
+   git remote add github https://github.com/<用户名>/<仓库名>.git
+   git push -u github main
+   ```
+2. 打开 GitHub 仓库 **Settings → Pages**，把 **Build and deployment → Source** 设为 **GitHub Actions**。
+3. 推送完成后，`Deploy to GitHub Pages` workflow 会自动构建并发布；也可以在 **Actions** 页面手动运行。
+4. 站点地址通常是：
+   ```text
+   https://<用户名>.github.io/<仓库名>/
+   ```
+   如需根路径或更正式域名，可在 **Pages → Custom domain** 绑定自定义域名。
+
+说明：
+
+- 67.8 MB 原片低于 GitHub 单文件 100 MB 限制，可直接随仓库发布，不需要压缩或 Git LFS。
+- GitHub Pages 的发布站点上限约 1 GB，带宽软限制约 100 GB/月；按原片大小估算，每月大约支持 1,400 次完整播放。
+- 如果仓库是 Private，需要 GitHub Pro / Team / Enterprise 才能启用 Pages；公开仓库不受此限制。
+- GitHub Pages 与 Vercel 部署互不影响，可以同时保留。
+
 ## 页面结构
 
 1. Hero + 平台介绍影片（自定义播放器、章节跳转、静音/全屏）

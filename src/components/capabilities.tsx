@@ -16,7 +16,7 @@ const CAPABILITIES = [
     description:
       "输入场景描述与提示词，结合市场、客户与风格约束，快速生成可用的场景效果图。",
     tags: ["提示词生成", "多风格组合", "批量出图"],
-    image: "/images/card-cases.jpg",
+    image: "images/card-cases.jpg",
     alt: "由文字提示生成的庭院窗景厨房场景效果图",
   },
   {
@@ -26,7 +26,7 @@ const CAPABILITIES = [
     description:
       "上传产品原图，搭配参考图与布局约束，生成建筑级质感的场景大片，支持多版本演化与精修。",
     tags: ["产品原图", "参考图迁移", "多版本精修"],
-    image: "/images/card-scene.jpg",
+    image: "images/card-scene.jpg",
     alt: "由产品原图生成的高质感厨房水龙头场景效果图",
   },
   {
@@ -36,7 +36,7 @@ const CAPABILITIES = [
     description:
       "把个人与团队的风格、布局、样图与提示词沉淀为知识库资产，在每一次文生、图生任务中直接调用。",
     tags: ["个人知识库", "团队知识库", "一键复用"],
-    image: "/images/card-knowledge.jpg",
+    image: "images/card-knowledge.jpg",
     alt: "研发 AI设计平台布局图库与场景样图库的资产管理界面",
   },
 ];

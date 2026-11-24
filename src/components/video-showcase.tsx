@@ -20,28 +20,28 @@ const CHAPTERS = [
     time: "00:00",
     label: "平台全景",
     description: "四大业务域一屏贯通",
-    image: "/images/chapter-overview.jpg",
+    image: "images/chapter-overview.jpg",
   },
   {
     start: 12,
     time: "00:12",
     label: "场景生成",
     description: "产品原图 → 场景大片",
-    image: "/images/chapter-scene.jpg",
+    image: "images/chapter-scene.jpg",
   },
   {
     start: 25,
     time: "00:25",
     label: "电子画册",
     description: "多页内容一键编排",
-    image: "/images/chapter-catalog.jpg",
+    image: "images/chapter-catalog.jpg",
   },
   {
     start: 42,
     time: "00:42",
     label: "交付与治理",
     description: "工单闭环与企业控制台",
-    image: "/images/chapter-workbench.jpg",
+    image: "images/chapter-workbench.jpg",
   },
 ] as const;
 
@@ -252,7 +252,7 @@ export function VideoShowcase() {
           <video
             ref={videoRef}
             className="h-full w-full object-cover"
-            poster="/images/poster.jpg"
+            poster="images/poster.jpg"
             preload="metadata"
             autoPlay
             loop
@@ -269,7 +269,7 @@ export function VideoShowcase() {
             onPlay={() => setIsPlaying(true)}
             onPause={() => setIsPlaying(false)}
           >
-            <source src="/media/rd-ai-intro.mp4" type="video/mp4" />
+            <source src="media/rd-ai-intro.mp4" type="video/mp4" />
             您的浏览器暂不支持播放此影片。
           </video>
 

@@ -119,7 +119,7 @@ export function Workspace() {
 
                 <div className="relative overflow-hidden rounded-[22px] border border-white/70 bg-[linear-gradient(145deg,#f8fbff_0%,#eaf1ff_58%,#f4f7ff_100%)] sm:rounded-[28px]">
                   <img
-                    src="/images/knowledge-matrix.jpg"
+                    src="images/knowledge-matrix.jpg"
                     alt="研发 AI设计平台四大设计知识库：场景风格库、布局图库与场景样图库"
                     loading="lazy"
                     className="block h-auto w-full"
