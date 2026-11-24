@@ -2,9 +2,7 @@
 
 用于播放「研发 AI设计平台」介绍影片的落地页。视觉延续平台首页的浅蓝色调、浮层导航、白色圆角卡片与紫色品牌标记；内容聚焦文生 / 图生场景图与个人、团队知识资产的沉淀复用。
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new)
-
-> 点击按钮前往 Vercel 创建项目，连接 GitLab 后选择本仓库 `luta-public/ai_rd_vi` 即可自动绑定并构建。
+> 自建 GitLab 无法被 Vercel 直接 Import。本项目通过 **Vercel CLI** 或 **GitLab CI** 部署，配置见 [部署到 Vercel](#部署到-vercel)。
 
 ## 技术栈
 
@@ -39,23 +37,39 @@ npm run preview
 
 仓库远程：`https://gitlab.bjyt.de/luta-public/ai_rd_vi.git`
 
-### 一键创建项目
+**Vercel 的原生 Git 集成无法直接连接自建 GitLab。** 本项目使用以下两种方式之一部署，Vercel 不需要访问 GitLab。
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new)
+### 方式一：Vercel CLI 直接部署
 
-1. 点击上方按钮，打开 Vercel 的 New Project 页面。
-2. 连接 GitLab 账号，选择 `luta-public/ai_rd_vi` 仓库。
-3. Framework Preset 保持 **Vite**，Root Directory 保持仓库根目录。
-4. Build Command 使用 `npm run build`，Output Directory 使用 `dist`。
-5. 点击 **Deploy**。Vercel 会自动读取 `vercel.json` 并完成首次构建；之后每次推送到 `main` 都会自动部署。
-
-> Vercel 连接 GitLab 仓库时，账号需要项目或所在 Group 的 **Maintainer** 权限，用于配置 webhook 和自动部署。若团队使用自建 GitLab Pipelines，也可以执行 `vercel build` + `vercel deploy --prebuilt`。
-
-也可以直接使用 CLI 部署：
+最快的上线方式，适合当前机器直接发布：
 
 ```bash
+npx vercel login
+npx vercel link
 npx vercel --prod
 ```
+
+- 首次 `vercel link` 用于创建或关联 Vercel 项目，会生成 `.vercel/project.json`（已被 `.gitignore` 忽略）。
+- Framework Preset 选择 **Vite**；Build Command 为 `npm run build`；Output Directory 为 `dist`。
+- 页面使用的 67.8 MB 原片低于 Vercel 单文件 100 MB 限制，无需压缩。
+- `.vercelignore` 已排除本地素材源 `homepage-promo.mp4`，不会重复上传。
+
+### 方式二：GitLab CI 自动部署
+
+仓库已包含 `.gitlab-ci.yml`。GitLab Runner 负责构建，再通过 HTTPS 把 `.vercel/output` 推送给 Vercel，因此不依赖 Vercel 读取自建 GitLab。
+
+1. 本地执行一次：
+   ```bash
+   npx vercel login
+   npx vercel link
+   ```
+   打开生成的 `.vercel/project.json`，记下 `orgId` 和 `projectId`。
+2. 在 Vercel 控制台 **Account Settings → Tokens** 创建 Access Token。
+3. 在 GitLab 项目 **Settings → CI/CD → Variables** 添加，并标记为 Masked / Protected：
+   - `VERCEL_TOKEN`
+   - `VERCEL_ORG_ID`
+   - `VERCEL_PROJECT_ID`
+4. 推送到 `main` 后，CI 自动执行 `vercel build --prod` + `vercel deploy --prebuilt --prod`；其他分支生成 Preview 部署。
 
 Vercel 配置已写入 `vercel.json`：
 
