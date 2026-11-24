@@ -31,19 +31,9 @@ npm run preview
 
 ## 内容与媒体
 
-- 介绍影片：`public/media/rd-ai-intro.mp4`，1920 × 1080，H.264，约 13 MB。
+- 介绍影片：`public/media/rd-ai-intro.mp4`，2560 × 1440，H.264，约 67.8 MB，**直接使用原片，不做压缩转码**。
 - 海报与章节图：`public/images/`，均由介绍影片关键帧截取。
-- 原始影片 `homepage-promo.mp4` 保留在本地作为素材源，已加入 `.gitignore`，不参与仓库与构建。
-
-重新导出影片的 ffmpeg 参考命令：
-
-```bash
-ffmpeg -i homepage-promo.mp4 \
-  -vf "scale=1920:1080:flags=lanczos" \
-  -c:v libx264 -preset slow -crf 23 -profile:v high -pix_fmt yuv420p \
-  -c:a aac -b:a 128k -movflags +faststart \
-  public/media/rd-ai-intro.mp4
-```
+- 原始影片 `homepage-promo.mp4` 保留在本地作为素材源，已加入 `.gitignore`。
 
 ## 部署到 Vercel
 
