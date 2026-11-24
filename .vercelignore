@@ -1,0 +1,5 @@
+homepage-promo.mp4
+node_modules
+.git
+.vercel
+*.log
