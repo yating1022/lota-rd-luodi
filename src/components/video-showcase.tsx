@@ -74,7 +74,7 @@ export function VideoShowcase() {
 
   useEffect(() => {
     const onFullscreenChange = () => {
-      setIsFullscreen(document.fullscreenElement === stageRef.current);
+      setIsFullscreen(Boolean(document.fullscreenElement));
     };
 
     document.addEventListener("fullscreenchange", onFullscreenChange);
@@ -153,16 +153,52 @@ export function VideoShowcase() {
 
   const toggleFullscreen = async () => {
     const stage = stageRef.current;
-    if (!stage) return;
+    const video = videoRef.current;
+    if (!stage || !video) return;
 
-    try {
-      if (document.fullscreenElement) {
+    if (document.fullscreenElement) {
+      try {
         await document.exitFullscreen();
-      } else {
-        await stage.requestFullscreen();
+      } catch {
+        // The browser may have already exited fullscreen.
       }
-    } catch {
-      // Fullscreen can be unavailable in embedded or restricted contexts.
+      return;
+    }
+
+    const isIOS =
+      /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+      (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+    const nativeVideo = video as HTMLVideoElement & {
+      webkitEnterFullscreen?: () => void;
+    };
+
+    // iPhone Safari does not support Fullscreen API on arbitrary elements.
+    // Use the native video player when available so fullscreen still works.
+    if (isIOS && typeof nativeVideo.webkitEnterFullscreen === "function") {
+      nativeVideo.webkitEnterFullscreen();
+      return;
+    }
+
+    if (typeof stage.requestFullscreen === "function") {
+      try {
+        await stage.requestFullscreen();
+        return;
+      } catch {
+        // Fall through to native video fullscreen.
+      }
+    }
+
+    if (typeof nativeVideo.webkitEnterFullscreen === "function") {
+      nativeVideo.webkitEnterFullscreen();
+      return;
+    }
+
+    if (typeof video.requestFullscreen === "function") {
+      try {
+        await video.requestFullscreen();
+      } catch {
+        // Fullscreen can be unavailable in embedded or restricted contexts.
+      }
     }
   };
 
